@@ -1,11 +1,13 @@
 "use client";
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, Suspense, useState } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-export default function LoginPage() {
+export const dynamic = 'force-dynamic';
+
+function LoginPageInner() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/';
   const router = useRouter();
@@ -73,5 +75,13 @@ export default function LoginPage() {
         </p>
       </form>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="container">Loading...</div>}>
+      <LoginPageInner />
+    </Suspense>
   );
 }

@@ -1,11 +1,13 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, Suspense, useMemo, useState } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function RegisterPage() {
+export const dynamic = 'force-dynamic';
+
+function RegisterPageInner() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/';
   const router = useRouter();
@@ -117,5 +119,13 @@ export default function RegisterPage() {
         </p>
       </form>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="container">Loading...</div>}>
+      <RegisterPageInner />
+    </Suspense>
   );
 }
